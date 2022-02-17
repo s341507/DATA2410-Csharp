@@ -30,7 +30,7 @@ try
         var req = Encoding.ASCII.GetString(receive, 0, length);
         Console.WriteLine(req);
 
-        //sending our hello world page toe the client
+        //sending our hello world responce to the client
         client.Send(responce);
 
         //lastly closing the connection to the client:
