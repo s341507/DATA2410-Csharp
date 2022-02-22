@@ -11,15 +11,32 @@ var buffer = new byte[1024];
 //we have a try block here in case something unexpected happens, so we can gracefully close the client socket:
 try
 {
-    //connect to the server:
+    //connect to the server
     client.Connect(endpoint);
+    Console.WriteLine("Connected to server, text in the terminal will be send to the server..");
 
-    //wait for a text message:
-    int length = client.Receive(buffer);
-    var mgs = Encoding.ASCII.GetString(buffer, 0, length);
+    while (true)
+    {
+        // get message from terminal
+        var input = Console.ReadLine();
+        if (input is null)
+            break;
 
-    //display the message:
-    Console.WriteLine($"Got message from server: {mgs}");
+        //send message from terminal to server
+        var mgs = Encoding.ASCII.GetBytes(input);
+        client.Send(mgs);
+
+        //wait for responce message from server:
+        int length = client.Receive(buffer);
+        if (length == 1 && buffer[0] == 0)
+            continue; // hearthbeat can just be ignored
+
+        var responce = Encoding.ASCII.GetString(buffer, 0, length);
+        Console.WriteLine($"mgs from server: {responce}");
+
+        if (responce.EndsWith("Bye!"))
+            break; // if the message from the server ends with "bye!" we know the server has disconnected
+    }
 }
 catch (Exception ex)
 {
@@ -27,6 +44,7 @@ catch (Exception ex)
 }
 finally
 {
+    Console.WriteLine("Disconnected!");
     client.Shutdown(SocketShutdown.Both);
     client.Close();
 }
