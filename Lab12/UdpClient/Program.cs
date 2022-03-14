@@ -7,7 +7,7 @@ var response = new byte[1024];
 
 //setting up the endpoint and the server socket that will be listening for connections:
 var hostInfo = Dns.GetHostEntry("djxmmx.net");
-var ip = hostInfo.AddressList[0];
+var ip = hostInfo.AddressList[0]; //var ip = IPAddress.Parse("23.28.179.206"); // idk, but the dns seems to give the wrong IPAddress, it worked before
 var endpoint = new IPEndPoint(ip, 17); // address and port
 
 //using a using statment so we don't need to close the socket by ourself
